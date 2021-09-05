@@ -26,11 +26,12 @@ public class ManagerVenta {
 
     private Connection conexion;
     // QUERYS   
-    private String insertarVenta = "INSERT INTO Venta (Fecha_Venta, Precio_Mueble_Vendido, Mueble_Ensamblado, Sala_Venta, Cliente, Factura, Caja) VALUES(?,?,?,?,?,?,?)";
+    private String insertarVenta = "INSERT INTO Venta (Fecha_Venta, Precio_Mueble_Vendido, Mueble_Ensamblado, Sala_Venta, Cliente, Factura, Caja, Vendedor) VALUES(?,?,?,?,?,?,?,?)";
     private String borrarVenta = "DELETE FROM Venta WHERE Id_Venta = ?";
     private String borrarFactura = "DELETE FROM Venta WHERE Factura = ?";
     private String seleccionarVenta = "SELECT * FROM Venta WHERE Id_Venta = ?";
     private String seleccionarTodo = "SELECT * FROM Venta";
+    private String selleccionarTodoOrdenadoASC = "SELECT * FROM Venta ORDER BY Fecha_Venta ASC";
     private String seleccionarFechaVenta = "SELECT * FROM Venta WHERE Fecha_Venta = ?";
     private String seleccionarMueble = "SELECT * FROM Venta WHERE Mueble_Ensamblado = ?";
     private String seleccionarSalaVenta = "SELECT * FROM Venta WHERE Sala_Venta = ?";
@@ -39,7 +40,10 @@ public class ManagerVenta {
     private String seleccionarClienteDESC = "SELECT * FROM Venta WHERE Cliente = ? ORDER BY Fecha_Venta DESC";
     private String seleccionarFactura = "SELECT * FROM Venta WHERE Factura = ?";
     private String seleccionarCaja = "SELECT * FROM Venta WHERE Caja = ?";
-
+    private String seleccionarIntervaloFecha = "SELECT * FROM Venta WHERE Fecha_Venta BETWEEN ? AND ?";
+    private String seleccionarVentasMuebleMasVendidoIT = "SELECT * FROM Venta INNER JOIN Mueble WHERE (Nombre_Mueble = (SELECT MAX(Nombre_Mueble) FROM Venta INNER JOIN Mueble LIMIT 1)) AND (Fecha_Venta BETWEEN ? AND ?)";
+    private String seleccionarVentasMuebleMenosVendidoIT = "SELECT * FROM Venta INNER JOIN Mueble WHERE (Nombre_Mueble = (SELECT MIN(Nombre_Mueble) FROM Venta INNER JOIN Mueble LIMIT 1)) AND (Fecha_Venta BETWEEN ? AND ?)";
+    private String seleccionarVentasVendedor = "SELECT * FROM Venta INNER JOIN Usuario WHERE (Nombre_Usuario = (SELECT MAX(Nombre_Usuario) FROM Venta INNER JOIN Usuario LIMIT 1)) AND (Fecha_Venta BETWEEN ? AND ?)";
     private String updateFacturaCliente = "UPDATE Venta SET Factura = ?, Cliente = ? WHERE Cliente = ?";
     private String updatePrecioMuebleFactura = "UPDATE Venta SET Precio_Mueble_Vendido = ? WHERE (Factura = ?) AND (Mueble_Ensamblado = ?)";
 
@@ -49,12 +53,13 @@ public class ManagerVenta {
     ManagerFactura managerFactura = new ManagerFactura();
     ManagerSalaVentas managerSalaVentas = new ManagerSalaVentas();
     ManagerEnsamblajeMueble managerEnsamblajeMueble = new ManagerEnsamblajeMueble();
+    ManagerUsuario managerUsuario = new ManagerUsuario();
 
     public ManagerVenta() {
         this.conexion = Conexion.getConnection();
     }
 
-    public void insertarVenta(LocalDate fechaVenta, double precioMuebleVendido, int idMuebleEnsamblado, int idSalaVenta, String NITcliente, int idFactura, int idCaja) {
+    public void insertarVenta(LocalDate fechaVenta, double precioMuebleVendido, int idMuebleEnsamblado, int idSalaVenta, String NITcliente, int idFactura, int idCaja, String vendedor) {
 
         try {
             PreparedStatement ps = conexion.prepareStatement(insertarVenta);
@@ -65,6 +70,7 @@ public class ManagerVenta {
             ps.setString(5, NITcliente);
             ps.setInt(6, idFactura);
             ps.setInt(7, idCaja);
+            ps.setString(8, vendedor);
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
@@ -132,7 +138,86 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado), managerUsuario.seleccionarNombre(vendedor)));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ventas;
+    }
+
+    public ArrayList<Venta> seleccionarVentasMuebleMasVendido(String fechaInicial, String fechaFinal) {
+        ArrayList<Venta> ventas = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(seleccionarVentasMuebleMasVendidoIT);
+            ps.setString(1, fechaInicial);
+            ps.setString(2, fechaFinal);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("Id_Venta");
+                Date fechaVenta = rs.getDate("Fecha_Venta");
+                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+                int salaVenta = rs.getInt("Sala_Venta");
+                String nitCliente = rs.getString("Cliente");
+                int factura = rs.getInt("Factura");
+                int caja = rs.getInt("Caja");
+                String vendedor = rs.getString("Vendedor");
+                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado), managerUsuario.seleccionarNombre(vendedor)));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ventas;
+    }
+
+    public ArrayList<Venta> seleccionarVentasMuebleMenosVendido(String fechaInicial, String fechaFinal) {
+        ArrayList<Venta> ventas = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(seleccionarVentasMuebleMenosVendidoIT);
+            ps.setString(1, fechaInicial);
+            ps.setString(2, fechaFinal);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("Id_Venta");
+                Date fechaVenta = rs.getDate("Fecha_Venta");
+                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+                int salaVenta = rs.getInt("Sala_Venta");
+                String nitCliente = rs.getString("Cliente");
+                int factura = rs.getInt("Factura");
+                int caja = rs.getInt("Caja");
+                String vendedor = rs.getString("Vendedor");
+                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ventas;
+    }
+    
+        public ArrayList<Venta> seleccionarMayoresVentasVendedor(String fechaInicial, String fechaFinal) {
+        ArrayList<Venta> ventas = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(seleccionarVentasVendedor);
+            ps.setString(1, fechaInicial);
+            ps.setString(2, fechaFinal);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("Id_Venta");
+                Date fechaVenta = rs.getDate("Fecha_Venta");
+                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+                int salaVenta = rs.getInt("Sala_Venta");
+                String nitCliente = rs.getString("Cliente");
+                int factura = rs.getInt("Factura");
+                int caja = rs.getInt("Caja");
+                String vendedor = rs.getString("Vendedor");
+                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -155,7 +240,8 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado));
+                String vendedor = rs.getString("Vendedor");
+                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado), managerUsuario.seleccionarNombre(vendedor));
             }
 
         } catch (SQLException ex) {
@@ -181,7 +267,8 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -206,7 +293,8 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(idMuebleEnsamblado));
+                String vendedor = rs.getString("Vendedor");
+                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(idMuebleEnsamblado),managerUsuario.seleccionarNombre(vendedor));
             }
 
         } catch (SQLException ex) {
@@ -232,7 +320,8 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                mueblesSalaVentasVendidos.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                mueblesSalaVentasVendidos.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -257,7 +346,8 @@ public class ManagerVenta {
                 int salaVenta = rs.getInt("Sala_Venta");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -280,7 +370,32 @@ public class ManagerVenta {
                 int salaVenta = rs.getInt("Sala_Venta");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor) ));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ventasCliente;
+    }
+
+    public ArrayList<Venta> seleccionarVentasOrdenadas() {
+        ArrayList<Venta> ventasCliente = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(selleccionarTodoOrdenadoASC);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("Id_Venta");
+                Date fechaVenta = rs.getDate("Fecha_Venta");
+                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+                int salaVenta = rs.getInt("Sala_Venta");
+                String nitCliente = rs.getString("Cliente");
+                int factura = rs.getInt("Factura");
+                int caja = rs.getInt("Caja");
+                String vendedor = rs.getString("Vendedor");
+                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -303,7 +418,8 @@ public class ManagerVenta {
                 int salaVenta = rs.getInt("Sala_Venta");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -326,7 +442,8 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int salaVenta = rs.getInt("Sala_Venta");
                 int caja = rs.getInt("Caja");
-                ventasFactura.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasFactura.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
@@ -349,13 +466,40 @@ public class ManagerVenta {
                 String nitCliente = rs.getString("Cliente");
                 int factura = rs.getInt("Factura");
                 int caja = rs.getInt("Caja");
-                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+                String vendedor = rs.getString("Vendedor");
+                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
             }
 
         } catch (SQLException ex) {
             Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
         }
         return ventasFecha;
+    }
+
+    public ArrayList<Venta> seleccionarIntervaloTiempo(String fechaInicial, String fechaFinal) {
+        ArrayList<Venta> ventas = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(seleccionarIntervaloFecha);
+            ps.setString(1, fechaInicial);
+            ps.setString(2, fechaFinal);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idVenta = rs.getInt("Id_Venta");
+                Date fechaVenta = rs.getDate("Fecha_Venta");
+                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+                int salaVenta = rs.getInt("Sala_Venta");
+                String nitCliente = rs.getString("Cliente");
+                int factura = rs.getInt("Factura");
+                int caja = rs.getInt("Caja");
+                String vendedor = rs.getString("Vendedor");
+                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado),managerUsuario.seleccionarNombre(vendedor)));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerVenta.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ventas;
     }
 
 }

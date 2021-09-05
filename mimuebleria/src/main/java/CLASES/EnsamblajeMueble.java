@@ -19,14 +19,24 @@ public class EnsamblajeMueble {
     private double costoEnsamblaje;
     private SalaVenta sala;
     private Mueble mueble;
+    private boolean vendido;
 
-    public EnsamblajeMueble(int idEnsamblajeMueble, LocalDate fechaEnsamblaje, Usuario ensamblador, double costoEnsamblaje, SalaVenta sala, Mueble mueble) {
+    public EnsamblajeMueble(int idEnsamblajeMueble, LocalDate fechaEnsamblaje, Usuario ensamblador, double costoEnsamblaje, SalaVenta sala, Mueble mueble, boolean vendido) {
         this.idEnsamblajeMueble = idEnsamblajeMueble;
         this.fechaEnsamblaje = fechaEnsamblaje;
         this.ensamblador = ensamblador;
         this.costoEnsamblaje = costoEnsamblaje;
         this.sala = sala;
         this.mueble = mueble;
+        this.vendido = vendido;
+    }
+
+    public boolean isVendido() {
+        return vendido;
+    }
+
+    public void setVendido(boolean vendido) {
+        this.vendido = vendido;
     }
 
     public int getIdEnsamblajeMueble() {

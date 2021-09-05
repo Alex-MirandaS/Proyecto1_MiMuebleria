@@ -121,175 +121,175 @@ public class ManagerDevolucion {
         }
     }
 
-    public ArrayList<Venta> seleccionarTodo() {
-        ArrayList<Venta> ventas = new ArrayList<>();
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                int salaVenta = rs.getInt("Sala_Venta");
-                String nitCliente = rs.getString("Cliente");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return ventas;
-    }
-
-    public Venta seleccionarVenta(int idVenta) {
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarVenta);
-            ps.setInt(1, idVenta);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                int salaVenta = rs.getInt("Sala_Venta");
-                String nitCliente = rs.getString("Cliente");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullPointerException ex) {
-            //hay error en el localdate
-        }
-        return null;
-    }
-
-    public ArrayList<Venta> seleccionarFechaVenta(LocalDate fecha) {
-        ArrayList<Venta> ventasFecha = new ArrayList<>();
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarFechaVenta);
-            ps.setDate(1, Date.valueOf(fecha));
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                int salaVenta = rs.getInt("Sala_Venta");
-                String nitCliente = rs.getString("Cliente");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullPointerException ex) {
-            //hay error en el localdate
-        }
-        return ventasFecha;
-    }
-    
-        public Venta seleccionarMuebleEnsambladoVendido(int idMuebleEnsamblado) {
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarMueble);
-            ps.setInt(1, idMuebleEnsamblado);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                  int salaVenta = rs.getInt("Sala_Venta");
-                String nitCliente = rs.getString("Cliente");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(idMuebleEnsamblado));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullPointerException ex) {
-            //hay error en el localdate
-        }
-        return null;
-    }
-        
-            public ArrayList<Venta> seleccionarMuebleSalaVentaVendido(int salaVenta) {
-        ArrayList<Venta> mueblesSalaVentasVendidos = new ArrayList<>();
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarSalaVenta);
-            ps.setInt(1, salaVenta);
-            ResultSet rs = ps.executeQuery();
-
-          while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                String nitCliente = rs.getString("Cliente");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                mueblesSalaVentasVendidos.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NullPointerException ex) {
-            //hay error en el localdate
-        }
-        return mueblesSalaVentasVendidos;
-    } 
-
-    public ArrayList<Venta> seleccionarVentasCliente(String nitCliente) {
-        ArrayList<Venta> ventasCliente = new ArrayList<>();
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
-            ps.setString(1, nitCliente);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                int salaVenta = rs.getInt("Sala_Venta");
-                int factura = rs.getInt("Factura");
-                int caja = rs.getInt("Caja");
-                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return ventasCliente;
-    }
-    
-        public ArrayList<Venta> seleccionarVentasFactura(int factura) {
-        ArrayList<Venta> ventasFactura = new ArrayList<>();
-        try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
-            ps.setInt(1, factura);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int idVenta = rs.getInt("Id_Venta");
-                Date fechaVenta = rs.getDate("Fecha_Venta");
-                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
-                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
-                String nitCliente = rs.getString("Cliente");
-                int salaVenta = rs.getInt("Sala_Venta");
-                int caja = rs.getInt("Caja");
-                ventasFactura.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
-            }
-
-        } catch (SQLException ex) {
-            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return ventasFactura;
-    }
+//    public ArrayList<Venta> seleccionarTodo() {
+//        ArrayList<Venta> ventas = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                int salaVenta = rs.getInt("Sala_Venta");
+//                String nitCliente = rs.getString("Cliente");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                ventas.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return ventas;
+//    }
+//
+//    public Venta seleccionarVenta(int idVenta) {
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarVenta);
+//            ps.setInt(1, idVenta);
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                int salaVenta = rs.getInt("Sala_Venta");
+//                String nitCliente = rs.getString("Cliente");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullPointerException ex) {
+//            //hay error en el localdate
+//        }
+//        return null;
+//    }
+//
+//    public ArrayList<Venta> seleccionarFechaVenta(LocalDate fecha) {
+//        ArrayList<Venta> ventasFecha = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarFechaVenta);
+//            ps.setDate(1, Date.valueOf(fecha));
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                int salaVenta = rs.getInt("Sala_Venta");
+//                String nitCliente = rs.getString("Cliente");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                ventasFecha.add(new Venta(idVenta, fecha, precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullPointerException ex) {
+//            //hay error en el localdate
+//        }
+//        return ventasFecha;
+//    }
+//    
+//        public Venta seleccionarMuebleEnsambladoVendido(int idMuebleEnsamblado) {
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarMueble);
+//            ps.setInt(1, idMuebleEnsamblado);
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                  int salaVenta = rs.getInt("Sala_Venta");
+//                String nitCliente = rs.getString("Cliente");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                return new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(idMuebleEnsamblado));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullPointerException ex) {
+//            //hay error en el localdate
+//        }
+//        return null;
+//    }
+//        
+//            public ArrayList<Venta> seleccionarMuebleSalaVentaVendido(int salaVenta) {
+//        ArrayList<Venta> mueblesSalaVentasVendidos = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarSalaVenta);
+//            ps.setInt(1, salaVenta);
+//            ResultSet rs = ps.executeQuery();
+//
+//          while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                String nitCliente = rs.getString("Cliente");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                mueblesSalaVentasVendidos.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (NullPointerException ex) {
+//            //hay error en el localdate
+//        }
+//        return mueblesSalaVentasVendidos;
+//    } 
+//
+//    public ArrayList<Venta> seleccionarVentasCliente(String nitCliente) {
+//        ArrayList<Venta> ventasCliente = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
+//            ps.setString(1, nitCliente);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                int salaVenta = rs.getInt("Sala_Venta");
+//                int factura = rs.getInt("Factura");
+//                int caja = rs.getInt("Caja");
+//                ventasCliente.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return ventasCliente;
+//    }
+//    
+//        public ArrayList<Venta> seleccionarVentasFactura(int factura) {
+//        ArrayList<Venta> ventasFactura = new ArrayList<>();
+//        try {
+//            PreparedStatement ps = conexion.prepareStatement(seleccionarTodo);
+//            ps.setInt(1, factura);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                int idVenta = rs.getInt("Id_Venta");
+//                Date fechaVenta = rs.getDate("Fecha_Venta");
+//                double precioVenta = rs.getDouble("Precio_Mueble_Vendido");
+//                int muebleEnsamblado = rs.getInt("Mueble_Ensamblado");
+//                String nitCliente = rs.getString("Cliente");
+//                int salaVenta = rs.getInt("Sala_Venta");
+//                int caja = rs.getInt("Caja");
+//                ventasFactura.add(new Venta(idVenta, fechaVenta.toLocalDate(), precioVenta, managerCliente.seleccionarCliente(nitCliente), managerCaja.seleccionarCaja(caja), managerFactura.seleccionarFactura(factura), managerSalaVentas.seleccionarSalaVentas(salaVenta), managerEnsamblajeMueble.seleccionarMuebleEnsamblado(muebleEnsamblado)));
+//            }
+//
+//        } catch (SQLException ex) {
+//            Logger.getLogger(ManagerDevolucion.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return ventasFactura;
+//    }
 
 }

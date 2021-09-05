@@ -23,6 +23,7 @@ Enums/EnsamblajePiezasEnum.class
 Enums/VentaEnum.class
 MANAGERS/ManagerMueble$1.class
 CLASES/Venta.class
+Servlets/ServletReportes.class
 CLASES/Cliente.class
 Servlets/ServletPiezas.class
 MANAGERS/ManagerVenta.class

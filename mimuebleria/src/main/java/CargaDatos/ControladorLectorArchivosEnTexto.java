@@ -247,7 +247,7 @@ public class ControladorLectorArchivosEnTexto {
             case ENSAMBLAR_MUEBLE:
                 SalaVenta sala = obtenerSalaVenta(campos[0]);
                 Mueble mueble = obtenerTipoMueble(campos[0]);
-                return new EnsamblajeMueble(0, LocalDate.parse(campos[2], DateTimeFormatter.ofPattern("dd/MM/yyyy")), obtenerEnsamblador(campos[1]), descontarPiezas(mueble), sala, mueble);
+                return new EnsamblajeMueble(0, LocalDate.parse(campos[2], DateTimeFormatter.ofPattern("dd/MM/yyyy")), obtenerEnsamblador(campos[1]), descontarPiezas(mueble), sala, mueble, false);
             case CLIENTE:
                 if (campos.length > 3) {
                     return new Cliente(campos[0], campos[1], campos[2], campos[3], campos[4]);

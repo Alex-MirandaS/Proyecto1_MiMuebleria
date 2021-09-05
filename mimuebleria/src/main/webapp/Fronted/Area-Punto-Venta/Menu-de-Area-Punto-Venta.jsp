@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>MENU AREA PUNTO DE VENTA</h1>
-        <a href="Compra-Cliente\Compra-Por-IdMuebleEnsamblado.jsp">COMPRA POR ID MUEBLE</a>
+        <a href="Compra-Cliente\Compra-Por-IdMuebleEnsamblado.jsp?Usuario=Mordo777">COMPRA POR ID MUEBLE</a>
         <br>
         <a href="Ventas/Compras-Por-Cliente.jsp">VERIFICAR VENTAS DE UN CLIENTES</a>
         <br>

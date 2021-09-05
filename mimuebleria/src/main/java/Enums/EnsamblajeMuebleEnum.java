@@ -10,5 +10,5 @@ package Enums;
  * @author Alex
  */
 public enum EnsamblajeMuebleEnum {
-    FechaEnsamblaje, Ensamblador, CostoEnsamblaje, TipoMueble, SalaVentas;
+    FechaEnsamblaje, Ensamblador, CostoEnsamblaje, TipoMueble, SalaVentas, MuebleVendido;
 }

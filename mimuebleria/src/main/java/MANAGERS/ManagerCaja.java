@@ -24,13 +24,13 @@ public class ManagerCaja {
 
     private Connection conexion;
     // QUERYS   
-    private String insertarCaja = "INSERT INTO Caja (Estado, Valor) VALUES(?,?)";
+    private String insertarCaja = "INSERT INTO Caja (Ganacia, Valor) VALUES(?,?)";
     private String borrarCaja = "DELETE FROM Caja WHERE id_Caja = ?";
     private String seleccionarCaja = "SELECT * FROM Caja WHERE id_Caja = ?";
 
-     private String seleccionarEstado = "SELECT * FROM Caja WHERE Estado = ?";
+     private String seleccionarEstado = "SELECT * FROM Caja WHERE Ganacia = ?";
     private String seleccionarTodo = "SELECT * FROM Caja";
-    private String updateEstado = "UPDATE Caja SET Estado = ? WHERE id_Caja = ?";
+    private String updateEstado = "UPDATE Caja SET Ganacia = ? WHERE id_Caja = ?";
     private String updateValor = "UPDATE Caja SET Valor = ? WHERE id_Caja = ?";
 
     //Managers
@@ -93,7 +93,7 @@ public class ManagerCaja {
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 int idCaja = rs.getInt("id_Caja");
-                boolean estado = rs.getBoolean("Estado");
+                boolean estado = rs.getBoolean("Ganacia");
                 double valor = rs.getDouble("Valor");
                 cajas.add(new Caja(valor, idCaja, estado));
             }
@@ -112,7 +112,7 @@ public class ManagerCaja {
             ps.setInt(1, idCaja);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                boolean estado = rs.getBoolean("Estado");
+                boolean estado = rs.getBoolean("Ganacia");
                 double valor = rs.getDouble("Valor");
                 caja = new Caja(valor, idCaja, estado);
                 break;

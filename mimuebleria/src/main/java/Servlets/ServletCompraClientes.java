@@ -9,6 +9,7 @@ import CLASES.Cliente;
 import CLASES.EnsamblajeMueble;
 import CLASES.Factura;
 import CLASES.SalaVenta;
+import CLASES.Usuario;
 import Enums.EnsamblajeMuebleEnum;
 import Enums.FacturaEnum;
 import Enums.SalaVentaEnum;
@@ -17,6 +18,7 @@ import MANAGERS.ManagerCliente;
 import MANAGERS.ManagerEnsamblajeMueble;
 import MANAGERS.ManagerFactura;
 import MANAGERS.ManagerSalaVentas;
+import MANAGERS.ManagerUsuario;
 import MANAGERS.ManagerVenta;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -40,6 +42,7 @@ public class ServletCompraClientes extends HttpServlet {
     ManagerVenta managerVenta = new ManagerVenta();
     ManagerFactura managerFactura = new ManagerFactura();
     ManagerCaja managerCaja = new ManagerCaja();
+    ManagerUsuario managerUsuario = new ManagerUsuario();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -54,6 +57,7 @@ public class ServletCompraClientes extends HttpServlet {
         String factura = "Fronted/Area-Punto-Venta/Compra-Cliente/Factura.jsp";
         String compraIdMuebleEnsamblado = "Fronted/Area-Punto-Venta/Compra-Cliente/Compra-Por-IdMuebleEnsamblado.jsp";
         //Parametros
+        Usuario usuario = managerUsuario.seleccionarNombre(request.getParameter("Usuario"));
         String eleccion = request.getParameter("eleccion");
         String destino = "";
 
@@ -82,7 +86,7 @@ public class ServletCompraClientes extends HttpServlet {
             if (request.getParameter("NIT") != null) {
                 Cliente cliente = managerCliente.seleccionarCliente(request.getParameter("NIT"));
                 if (cliente != null) {
-                    int idFactura = realizarVentas(request.getParameter("mueblesAnteriores"), cliente);
+                    int idFactura = realizarVentas(request.getParameter("mueblesAnteriores"), cliente, usuario);
                     request.setAttribute("idFactura", idFactura);
                     destino = factura;
                 }
@@ -90,6 +94,8 @@ public class ServletCompraClientes extends HttpServlet {
                 System.out.println("ERROR");
             }
         }
+        
+        request.setAttribute("Usuario", usuario.getNombreUsuario());
         RequestDispatcher rs = request.getRequestDispatcher(destino);
         rs.forward(request, response);
     }
@@ -117,7 +123,7 @@ public class ServletCompraClientes extends HttpServlet {
         return arrayMueblesAnteriores;
     }
 
-    private int realizarVentas(String idMueblesAComprar, Cliente cliente) {
+    private int realizarVentas(String idMueblesAComprar, Cliente cliente, Usuario usuario) {
 
         ArrayList<String> arrayIdMueblesAComprar = new ArrayList<>();
         String idMuebletemp = "";
@@ -143,7 +149,10 @@ public class ServletCompraClientes extends HttpServlet {
             managerCaja.insertarCaja(true, muebleEnsamblado.getMueble().getPrecioVenta());
 
             managerVenta.insertarVenta(LocalDate.now(), muebleEnsamblado.getMueble().getPrecioVenta(), muebleEnsamblado.getIdEnsamblajeMueble(), salaVenta.getIdSalaVenta(),
-                    cliente.getNIT(), factura.getIdFactura(), managerCaja.seleccionarCaja(managerCaja.seleccionarTodo().size()).getIdCaja());
+                    cliente.getNIT(),
+                    factura.getIdFactura(), 
+                    managerCaja.seleccionarCaja(managerCaja.seleccionarTodo().size()).getIdCaja(),
+                    usuario.getNombreUsuario());
             //Restar de la Base de Datos
              managerCaja.insertarCaja(false, muebleEnsamblado.getCostoEnsamblaje());
             salaVenta.restarExistencia(1);
@@ -151,7 +160,7 @@ public class ServletCompraClientes extends HttpServlet {
 
             //aqui iria el cambio en el ensamblaje y la sala de ventas xd
             compraTotal += muebleEnsamblado.getMueble().getPrecioVenta();
-            managerEnsamblajeMueble.updateEnsamblajePieza(muebleEnsamblado.getIdEnsamblajeMueble(),""+0, EnsamblajeMuebleEnum.SalaVentas);
+            managerEnsamblajeMueble.updateEnsamblajePieza(muebleEnsamblado.getIdEnsamblajeMueble(),"true", EnsamblajeMuebleEnum.MuebleVendido);
         }
         managerFactura.updateFactura(managerFactura.seleccionarTodo().size(), "" + compraTotal, FacturaEnum.CompraTotal);
         return managerFactura.seleccionarFactura(managerFactura.seleccionarTodo().size()).getIdFactura();

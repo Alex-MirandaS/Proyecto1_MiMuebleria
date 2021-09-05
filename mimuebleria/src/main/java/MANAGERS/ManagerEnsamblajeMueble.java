@@ -27,22 +27,23 @@ public class ManagerEnsamblajeMueble {
 
     private Connection conexion;
     // QUERYS   
-    private String insertarEnsamMueble = "INSERT INTO Ensamblaje_Mueble (Fecha_Ensamblaje, Ensamblador, Costo_Ensamblaje, Tipo_Mueble, Sala_Ventas) VALUES(?,?,?,?,?)";
+    private String insertarEnsamMueble = "INSERT INTO Ensamblaje_Mueble (Fecha_Ensamblaje, Ensamblador, Costo_Ensamblaje, Tipo_Mueble, Sala_Ventas,Vendido) VALUES(?,?,?,?,?,?)";
     private String borrarEnsamMueble = "DELETE FROM Ensamblaje_Mueble WHERE Id_Ensamblaje_Mueble = ?";
     private String seleccionarEnsamMueble = "SELECT * FROM Ensamblaje_Mueble WHERE Id_Ensamblaje_Mueble = ?";
     private String seleccionarTodo = "SELECT * FROM Ensamblaje_Mueble";
-    private String seleccionarMueblesEnsambladosEnSV = "SELECT * FROM Ensamblaje_Mueble WHERE Sala_Ventas != 0";
+    private String seleccionarMueblesEnsambladosEnSV = "SELECT * FROM Ensamblaje_Mueble WHERE Vendido = 0";
     private String seleccionarFechaEnsamblaje = "SELECT * FROM Ensamblaje_Mueble WHERE Fecha_Ensamblaje = ?";
     private String seleccionarMueble = "SELECT * FROM Ensamblaje_Mueble WHERE Mueble = ?";
     private String seleccionarEnsamblador = "SELECT * FROM Ensamblaje_Mueble WHERE Ensamblador = ?";
     private String seleccionarTodoASC = "SELECT * FROM Ensamblaje_Mueble ORDER BY Fecha_Ensamblaje ASC";
     private String seleccionarTodoDESC = "SELECT * FROM Ensamblaje_Mueble ORDER BY Fecha_Ensamblaje DESC";
 
-    private String updateFechaEnsamblaje = "UPDATE Ensamblaje_Mueble SET Fecha_Ensamblaje = ? WHERE Id_Ensamblaje_Pieza = ?";
-    private String updateEnsamblador = "UPDATE Ensamblaje_Mueble SET Ensamblador = ? WHERE Id_Ensamblaje_Pieza = ?";
-    private String updateCostoEnsamblaje = "UPDATE Ensamblaje_Mueble SET Costo_Ensamblaje = ? WHERE Id_Ensamblaje_Pieza = ?";
-    private String updateTipoMueble = "UPDATE Ensamblaje_Mueble SET Tipo_Mueble = ? WHERE Id_Ensamblaje_Pieza = ?";
-    private String updateSalaVentas = "UPDATE Ensamblaje_Mueble SET Sala_Ventas = ? WHERE Id_Ensamblaje_Pieza = ?";
+    private String updateFechaEnsamblaje = "UPDATE Ensamblaje_Mueble SET Fecha_Ensamblaje = ? WHERE Id_Ensamblaje_Mueble = ?";
+    private String updateEnsamblador = "UPDATE Ensamblaje_Mueble SET Ensamblador = ? WHERE Id_Ensamblaje_Mueble = ?";
+    private String updateCostoEnsamblaje = "UPDATE Ensamblaje_Mueble SET Costo_Ensamblaje = ? WHERE Id_Ensamblaje_Mueble = ?";
+    private String updateTipoMueble = "UPDATE Ensamblaje_Mueble SET Tipo_Mueble = ? WHERE Id_Ensamblaje_Mueble = ?";
+    private String updateSalaVentas = "UPDATE Ensamblaje_Mueble SET Sala_Ventas = ? WHERE Id_Ensamblaje_Mueble = ?";
+    private String updateVendido = "UPDATE Ensamblaje_Mueble SET Vendido = ? WHERE Id_Ensamblaje_Mueble = ?";
     //Managers
     ManagerSalaVentas managerSV = new ManagerSalaVentas();
     ManagerMueble managerMueble = new ManagerMueble();
@@ -61,6 +62,7 @@ public class ManagerEnsamblajeMueble {
             ps.setDouble(3, costoEnsamblaje);
             ps.setInt(4, tipoMueble);
             ps.setInt(5, salaVentas);
+            ps.setBoolean(6, false);
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
@@ -109,6 +111,11 @@ public class ManagerEnsamblajeMueble {
                     ps.setInt(1, Integer.parseInt(datoCambiado));
                     ps.setInt(2, idEnsamblajeMueble);
                     break;
+                case MuebleVendido:
+                    ps = conexion.prepareStatement(updateVendido);
+                    ps.setBoolean(1,Boolean.parseBoolean(datoCambiado));
+                    ps.setInt(2, idEnsamblajeMueble);
+                    break;
             }
             ps.executeUpdate();
         } catch (SQLException ex) {
@@ -128,8 +135,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -150,8 +157,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -172,8 +179,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -194,8 +201,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -216,7 +223,8 @@ public class ManagerEnsamblajeMueble {
                 String ensamblador = rs.getString("Ensamblador");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-                return new EnsamblajeMueble(idMuebleEnsamblado, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble));
+                boolean vendido = rs.getBoolean("Vendido");
+                return new EnsamblajeMueble(idMuebleEnsamblado, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido);
             }
 
         } catch (SQLException ex) {
@@ -239,7 +247,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-                ensamblajeMuebles.add(new EnsamblajeMueble(idEnsamblajeMueble, datefechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMuebles.add(new EnsamblajeMueble(idEnsamblajeMueble, datefechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -263,7 +272,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 int tipoMueble = rs.getInt("Tipo_Mueble");
                 int salaVentas = rs.getInt("Sala_Ventas");
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), ensambladorDato, costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), ensambladorDato, costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble), vendido));
             }
 
         } catch (SQLException ex) {
@@ -285,7 +295,8 @@ public class ManagerEnsamblajeMueble {
                 double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
                 String ensamblador = rs.getString("Ensamblador");
                 int salaVentas = rs.getInt("Sala_Ventas");
-                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(idTipoMueble)));
+                boolean vendido = rs.getBoolean("Vendido");
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(idTipoMueble), vendido));
             }
 
         } catch (SQLException ex) {

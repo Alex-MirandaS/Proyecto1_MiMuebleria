@@ -22,8 +22,9 @@ public class Venta {
     private Factura factura;
     private SalaVenta salaVenta;
     private EnsamblajeMueble muebleEnsamblado;
+    private Usuario vendedor;
 
-    public Venta(int idVenta, LocalDate fechaVenta, double precioMuebleVendido, Cliente cliente, Caja caja, Factura factura, SalaVenta salaVenta, EnsamblajeMueble muebleEnsamblado) {
+    public Venta(int idVenta, LocalDate fechaVenta, double precioMuebleVendido, Cliente cliente, Caja caja, Factura factura, SalaVenta salaVenta, EnsamblajeMueble muebleEnsamblado,Usuario vendedor) {
         this.idVenta = idVenta;
         this.fechaVenta = fechaVenta;
         this.precioMuebleVendido = precioMuebleVendido;
@@ -32,6 +33,15 @@ public class Venta {
         this.factura = factura;
         this.salaVenta = salaVenta;
         this.muebleEnsamblado = muebleEnsamblado;
+        this.vendedor = vendedor;
+    }
+
+    public Usuario getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Usuario vendedor) {
+        this.vendedor = vendedor;
     }
 
     public EnsamblajeMueble getMuebleEnsamblado() {

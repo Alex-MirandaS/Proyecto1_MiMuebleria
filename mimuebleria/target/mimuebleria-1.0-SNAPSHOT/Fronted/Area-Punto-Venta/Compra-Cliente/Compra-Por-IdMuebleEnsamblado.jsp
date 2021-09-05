@@ -26,9 +26,17 @@
             <label>NIT:</label>
             <input type="text" name="NIT"/>
             <input type="submit" name="eleccion" value="NO TENGO NIT">
-
-        <%
-        } else if (request.getAttribute("OpcionesNIT").equals("sinNit")) {%>
+            <%
+                String usuario;
+                if ((String) request.getParameter("Usuario") == null) {
+                    usuario = (String) request.getAttribute("Usuario");
+                } else {
+                    usuario = (String) request.getParameter("Usuario");
+                }
+            %>
+            <input type="hiden" name="Usuario" value=<%=usuario%>>
+            <%
+            } else if (request.getAttribute("OpcionesNIT").equals("sinNit")) {%>
 
             <label>NOMBRE:</label>
             <input type="text" name="nombreCliente"/>
@@ -36,17 +44,17 @@
             <input type="text" name="direccionCliente"/>
             <input type="submit" name="eleccion" value="SI TENGO NIT">
 
-        <%
-            }
-        %>
-        <br>
-        <h1>PORFA INGRESE EL ID DEL MUEBLE QUE DESEA COMPRAR</h1>
+            <%
+                }
+            %>
+            <br>
+            <h1>PORFA INGRESE EL ID DEL MUEBLE QUE DESEA COMPRAR</h1>
 
             <label>ID MUEBLE:</label>
             <input type="number" name="idMuebleEnsamblado"/>
             <%
                 if (!(request.getAttribute("idMueblesAnteriores") == null)) {%>
-            <input type="hidden" name="mueblesAnteriores" value=<%=(String)request.getAttribute("idMueblesAnteriores")+"-"%>   />
+            <input type="hidden" name="mueblesAnteriores" value=<%=(String) request.getAttribute("idMueblesAnteriores") + "-"%>   />
             <%}%>
             <input type="submit" name="eleccion" value="AGREGAR MUEBLE">
 
