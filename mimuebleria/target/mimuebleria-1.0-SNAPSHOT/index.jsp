@@ -17,5 +17,6 @@
         <%Conexion conexion = new Conexion();%>
         <a href="ServletPiezas?direccion=lista">Listapiezas</a>
         <a href="Fronted/Area-de-Fabrica/Menu-de-Fabrica.jsp">Menu Area de Fabrica</a>
+        <a href="Fronted/Area-Punto-Venta/Menu-de-Area-Punto-Venta.jsp">Menu Area Punto de Venta</a>
     </body>
 </html>

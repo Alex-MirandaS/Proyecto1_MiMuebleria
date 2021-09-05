@@ -40,11 +40,11 @@ public class ManagerFactura {
         this.conexion = Conexion.getConnection();
     }
 
-    public void insertarFactura(int nit, double compraTotal) {
+    public void insertarFactura(String nit, double compraTotal) {
 
         try {
             PreparedStatement ps = conexion.prepareStatement(insertarFactura);
-            ps.setInt(1, nit);
+            ps.setString(1, nit);
             ps.setDouble(2, compraTotal);
             ps.executeUpdate();
         } catch (SQLException ex) {
@@ -63,7 +63,7 @@ public class ManagerFactura {
         }
     }
 
-    public void updateCliente(int idFactura, String datoCambiado, FacturaEnum tipoCambio) {
+    public void updateFactura(int idFactura, String datoCambiado, FacturaEnum tipoCambio) {
 
         try {
             PreparedStatement ps = null;

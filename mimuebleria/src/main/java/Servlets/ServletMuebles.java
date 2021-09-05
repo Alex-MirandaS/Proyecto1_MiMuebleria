@@ -5,7 +5,6 @@
  */
 package Servlets;
 
-import CLASES.EnsamblajeMueble;
 import CLASES.EnsamblajePieza;
 import CLASES.Pieza;
 import CLASES.SalaVenta;
@@ -19,8 +18,6 @@ import MANAGERS.ManagerSalaVentas;
 import MANAGERS.ManagerTipoPieza;
 import MANAGERS.ManagerUsuario;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import javax.servlet.RequestDispatcher;

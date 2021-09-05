@@ -14,13 +14,14 @@ import java.time.LocalDate;
  */
 public class Venta {
 
-    public int idVenta;
-    public LocalDate fechaVenta;
-    public double precioMuebleVendido;
-    public Cliente cliente;
-    public Caja caja;
-    public Factura factura;
-    public SalaVenta salaVenta;
+    private int idVenta;
+    private LocalDate fechaVenta;
+    private double precioMuebleVendido;
+    private Cliente cliente;
+    private Caja caja;
+    private Factura factura;
+    private SalaVenta salaVenta;
+    private EnsamblajeMueble muebleEnsamblado;
 
     public Venta(int idVenta, LocalDate fechaVenta, double precioMuebleVendido, Cliente cliente, Caja caja, Factura factura, SalaVenta salaVenta, EnsamblajeMueble muebleEnsamblado) {
         this.idVenta = idVenta;
@@ -30,6 +31,15 @@ public class Venta {
         this.caja = caja;
         this.factura = factura;
         this.salaVenta = salaVenta;
+        this.muebleEnsamblado = muebleEnsamblado;
+    }
+
+    public EnsamblajeMueble getMuebleEnsamblado() {
+        return muebleEnsamblado;
+    }
+
+    public void setMuebleEnsamblado(EnsamblajeMueble muebleEnsamblado) {
+        this.muebleEnsamblado = muebleEnsamblado;
     }
 
     public int getIdVenta() {

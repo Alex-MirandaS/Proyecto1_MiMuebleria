@@ -31,6 +31,7 @@ public class ManagerEnsamblajeMueble {
     private String borrarEnsamMueble = "DELETE FROM Ensamblaje_Mueble WHERE Id_Ensamblaje_Mueble = ?";
     private String seleccionarEnsamMueble = "SELECT * FROM Ensamblaje_Mueble WHERE Id_Ensamblaje_Mueble = ?";
     private String seleccionarTodo = "SELECT * FROM Ensamblaje_Mueble";
+    private String seleccionarMueblesEnsambladosEnSV = "SELECT * FROM Ensamblaje_Mueble WHERE Sala_Ventas != 0";
     private String seleccionarFechaEnsamblaje = "SELECT * FROM Ensamblaje_Mueble WHERE Fecha_Ensamblaje = ?";
     private String seleccionarMueble = "SELECT * FROM Ensamblaje_Mueble WHERE Mueble = ?";
     private String seleccionarEnsamblador = "SELECT * FROM Ensamblaje_Mueble WHERE Ensamblador = ?";
@@ -137,6 +138,28 @@ public class ManagerEnsamblajeMueble {
         return ensamblajeMueble;
     }
 
+    public ArrayList<EnsamblajeMueble> seleccionarMueblesEnsambladosEnSV() {
+        ArrayList<EnsamblajeMueble> ensamblajeMueble = new ArrayList<>();
+        try {
+            PreparedStatement ps = conexion.prepareStatement(seleccionarMueblesEnsambladosEnSV);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int idEnsamblajeMueble = rs.getInt("Id_Ensamblaje_Mueble");
+                Date fechaEnsamblaje = rs.getDate("Fecha_Ensamblaje");
+                String ensamblador = rs.getString("Ensamblador");
+                double costoEnsamblaje = rs.getDouble("Costo_Ensamblaje");
+                int tipoMueble = rs.getInt("Tipo_Mueble");
+                int salaVentas = rs.getInt("Sala_Ventas");
+
+                ensamblajeMueble.add(new EnsamblajeMueble(idEnsamblajeMueble, fechaEnsamblaje.toLocalDate(), managerUsuario.seleccionarNombre(ensamblador), costoEnsamblaje, managerSV.seleccionarSalaVentas(salaVentas), managerMueble.seleccionarMueble(tipoMueble)));
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(ManagerEnsamblajeMueble.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return ensamblajeMueble;
+    }
+
     public ArrayList<EnsamblajeMueble> seleccionarTodoASC() {
         ArrayList<EnsamblajeMueble> ensamblajeMueble = new ArrayList<>();
         try {
@@ -184,7 +207,7 @@ public class ManagerEnsamblajeMueble {
     public EnsamblajeMueble seleccionarMuebleEnsamblado(int idMuebleEnsamblado) {
 
         try {
-            PreparedStatement ps = conexion.prepareStatement(seleccionarMueble);
+            PreparedStatement ps = conexion.prepareStatement(seleccionarEnsamMueble);
             ps.setInt(1, idMuebleEnsamblado);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {

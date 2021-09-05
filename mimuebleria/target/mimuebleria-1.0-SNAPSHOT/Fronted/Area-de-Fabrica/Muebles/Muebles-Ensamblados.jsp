@@ -28,6 +28,7 @@
         <table border="3">
             <thead>
                 <tr>
+                    <td>ID MUEBLE ENSAMBLADO</td>
                     <td>MUEBLE</td>
                     <td>ENSAMBLADOR</td>
                     <td>FECHA-ENSAMBLAJE</td>
@@ -54,7 +55,7 @@
 
 
                 %><tr>
-
+                    <td> <%= muebleEnsamblado.getIdEnsamblajeMueble() %></td>
                     <td> <%= muebleEnsamblado.getMueble().getNombreMueble()%></td>
                     <td> <%= muebleEnsamblado.getEnsamblador().getNombreUsuario()%></td>
                     <td> <%= muebleEnsamblado.getFechaEnsamblaje()%></td>

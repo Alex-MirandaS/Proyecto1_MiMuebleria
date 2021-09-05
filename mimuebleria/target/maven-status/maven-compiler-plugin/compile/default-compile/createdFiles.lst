@@ -39,6 +39,7 @@ MANAGERS/ManagerCliente$1.class
 MANAGERS/ManagerCaja$1.class
 CLASES/EnsamblajeMueble.class
 MANAGERS/ManagerUsuario.class
+Servlets/ServletAreaPuntoVenta.class
 CLASES/EnsamblajePieza.class
 MANAGERS/ManagerCliente.class
 MANAGERS/ManagerEnsamblajeMueble$1.class
@@ -50,6 +51,7 @@ MANAGERS/ManagerMueble.class
 MANAGERS/ManagerEnsamblajePieza.class
 Enums/EnsamblajeMuebleEnum.class
 MANAGERS/ManagerEnsamblajeMueble.class
+Servlets/ServletCompraClientes.class
 CLASES/Usuario.class
 MANAGERS/ManagerVenta$1.class
 Enums/CargaDatosEnum.class

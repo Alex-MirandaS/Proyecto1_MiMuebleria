@@ -8,6 +8,18 @@
         <servlet-name>ServletMuebles</servlet-name>
         <servlet-class>Servlets.ServletMuebles</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServletCompraClientes</servlet-name>
+        <servlet-class>Servlets.ServletCompraClientes</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServletAreaPuntoVenta</servlet-name>
+        <servlet-class>Servlets.ServletAreaPuntoVenta</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServletReportes</servlet-name>
+        <servlet-class>Servlets.ServletReportes</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ServletPiezas</servlet-name>
         <url-pattern>/ServletPiezas</url-pattern>
@@ -15,6 +27,18 @@
     <servlet-mapping>
         <servlet-name>ServletMuebles</servlet-name>
         <url-pattern>/ServletMuebles</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletCompraClientes</servlet-name>
+        <url-pattern>/ServletCompraClientes</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletAreaPuntoVenta</servlet-name>
+        <url-pattern>/ServletAreaPuntoVenta</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServletReportes</servlet-name>
+        <url-pattern>/ServletReportes</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

@@ -33,5 +33,7 @@
         <a href="Muebles/Muebles-Ensamblados.jsp">MUEBLES ENSAMBLADOS</a>
         <br>
         <a href="Muebles/Muebles-Sala-Ventas.jsp">MUEBLES SALA VENTAS</a>
+        <br><!-- comment -->
+        <a href="${pageContext.request.contextPath}/index.jsp">pagina anterior</a>
     </body>
 </html>
