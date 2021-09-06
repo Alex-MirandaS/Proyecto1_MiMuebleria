@@ -12,6 +12,7 @@
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/Servlets/ServletPiezas.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/MANAGERS/ManagerCliente.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/ClasesPredeterminadas/Conexion.java
+/home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/ExportarReportes/ExportarReporteCSV.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/CLASES/Cliente.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/Servlets/ServletCompraClientes.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/CargaDatos/LectorArchivosEnTexto.java
@@ -40,6 +41,7 @@
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/Enums/TipoPiezaEnum.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/MANAGERS/ManagerTipoPieza.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/Servlets/ServletAreaPuntoVenta.java
+/home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/Enums/ReportesEnum.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/MANAGERS/ManagerCaja.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/MANAGERS/ManagerSalaVentas.java
 /home/alex/Escritorio/6to Semestre Sistemas/IPC2/Tareas/PROYECTO 1/PROYECTO WEB/mimuebleria/src/main/java/MANAGERS/ManagerUsuario.java

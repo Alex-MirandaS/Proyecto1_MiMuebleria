@@ -15,6 +15,7 @@ CLASES/Devolucion.class
 CLASES/Factura.class
 MANAGERS/ManagerSalaVentas$1.class
 CargaDatos/LectorArchivosEnTexto.class
+ExportarReportes/ExportarReporteCSV.class
 CLASES/Mueble.class
 Enums/SalaVentaEnum.class
 CargaDatos/ControladorLectorArchivosEnTexto.class
@@ -31,7 +32,9 @@ Enums/UsuarioEnum.class
 CargaDatos/ControladorLectorArchivosEnTexto$1.class
 Enums/MuebleEnum.class
 MANAGERS/ManagerPieza$1.class
+ExportarReportes/ExportarReporteCSV$1.class
 MANAGERS/ManagerFactura.class
+Enums/ReportesEnum.class
 Enums/CajaEnum.class
 Servlets/ServletMuebles.class
 MANAGERS/ManagerTipoPieza.class
